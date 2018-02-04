@@ -96,8 +96,8 @@ public class Coordonnee implements Comparable<Coordonnee> {
     @Override
     public String toString() {
         return "Coordonnee{" +
-                "ligne=" + ligne +
-                ", colonne=" + colonne +
+                "x=" + ligne +
+                ", y=" + colonne +
                 '}';
     }
 }
