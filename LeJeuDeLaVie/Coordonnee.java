@@ -1,3 +1,4 @@
+
 package LeJeuDeLaVie;
 
 /**
@@ -99,5 +100,10 @@ public class Coordonnee implements Comparable<Coordonnee> {
                 "x=" + ligne +
                 ", y=" + colonne +
                 '}';
+    }
+
+    public Coordonnee distanceCoordonnee(Coordonnee c){
+        Coordonnee vecteur = new Coordonnee(this.ligne+c.getLigne(),this.colonne+c.getColonne());
+        return vecteur;
     }
 }

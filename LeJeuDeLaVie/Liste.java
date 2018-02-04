@@ -3,7 +3,7 @@ package LeJeuDeLaVie;
 /**
  *
  */
-public class Liste {
+public class Liste<T> {
 
     // Attributs
     private Maillon tete;
@@ -76,8 +76,8 @@ public class Liste {
     public void sort(){
         if(!estVide()){
             boolean trie = false;
-            Maillon tmp = tete;
-            Maillon echange = new Maillon(null,null);
+            Maillon<Coordonnee> tmp = tete;
+            Maillon<Coordonnee> echange = new Maillon(null,null);
             while (!trie){
                 trie = true;
                 while(tmp.getSuivant() != null) {
