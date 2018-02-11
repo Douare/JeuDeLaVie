@@ -1,22 +1,29 @@
 package LeJeuDeLaVie;
 
+import java.util.Objects;
+
 /**
  *
  */
-public class Maillon {
+public class Maillon<T>{
 
     // Attributs
-    private Coordonnee info;
-    private Maillon suivant;
+    private T info;
+    private Maillon<T> suivant;
 
-    // Constructeur
+    /** Constructeur du maillon
+     *
+     */
+    public Maillon() {
+
+    }
 
     /** Constructeur du maillon
      *
      * @param suivant : Maillon suivant
      * @param info : Coordonnee
      */
-    public Maillon(Coordonnee info, Maillon suivant) {
+    public Maillon(T info, Maillon<T> suivant) {
         this.suivant = suivant;
         this.info = info;
     }
@@ -27,7 +34,7 @@ public class Maillon {
      *
      * @return maillon.suivant : Champ suivant du maillon
      */
-    public Maillon getSuivant() {
+    public Maillon<T> getSuivant() {
         return suivant;
     }
 
@@ -35,7 +42,7 @@ public class Maillon {
      *
      * @param suivant : Maillon suivant
      */
-    public void setSuivant(Maillon suivant) {
+    public void setSuivant(Maillon<T> suivant) {
         this.suivant = suivant;
     }
 
@@ -43,7 +50,7 @@ public class Maillon {
      *
      * @return objet du champ info
      */
-    public Coordonnee getInfo() {
+    public T getInfo() {
         return info;
     }
 
@@ -51,32 +58,27 @@ public class Maillon {
      *
      * @param info : Objet à affecter
      */
-    public void setInfo(Coordonnee info) {
+    public void setInfo(T info) {
         this.info = info;
     }
 
-    /**
-     * Retourne vrai si les maillons sont les meme, faux sinon
-     *
-     * @param o : maillon a comparer
-     * @return : retourne un booleen
-     */
-    @Override
-    public boolean equals(Object o){
+    public boolean equals(Maillon<T> o) {
         if (this == o) return true;
-        if (!(o instanceof Coordonnee)) return false;
-        Maillon m = (Maillon)o;
-        return (this.getInfo().equals(m.getInfo()));
+        if (!(o instanceof Maillon)) return false;
+        return o.getInfo().equals(this.getInfo());
     }
+
 
     /**
      * Retourne les coordonnees contenues dans le maillon sous forme de chaine de caracteres
      *
      * @return : Chaine de caractere contenant les coordonnees
+     *
      */
     @Override
     public String toString() {
-        return "[" + info.toString() +
-                "]";
+        return "Maillon{" +
+                "info=" + info +
+                '}';
     }
 }

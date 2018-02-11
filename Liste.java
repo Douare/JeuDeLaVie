@@ -3,10 +3,10 @@ package LeJeuDeLaVie;
 /**
  *
  */
-public class Liste {
+public class Liste<T>{
 
     // Attributs
-    private Maillon tete;
+    private Maillon<T> tete;
 
     // Constructeur
 
@@ -14,7 +14,7 @@ public class Liste {
      * Initialise la liste a null
      */
     public Liste() {
-        this.tete = new Maillon(null, null);
+        this.tete = new Maillon<T>(null, null);
     }
 
     /**
@@ -22,7 +22,7 @@ public class Liste {
      *
      * @param tete : maillon de tete
      */
-    public Liste(Maillon tete) {
+    public Liste(Maillon<T> tete) {
         this.tete = tete;
     }
 
@@ -33,7 +33,7 @@ public class Liste {
      *
      * @return : tete de la liste
      */
-    public Maillon getTete() {
+    public Maillon<T> getTete() {
         return tete;
     }
 
@@ -42,7 +42,7 @@ public class Liste {
      *
      * @param tete : nouvelle tete de liste
      */
-    public void setTete(Maillon tete) {
+    public void setTete(Maillon<T> tete) {
         this.tete = tete;
     }
 
@@ -52,7 +52,7 @@ public class Liste {
      *
      * @param m
      */
-    public void ajouterMaillon(Maillon m) {
+    public void ajouterEnTete(Maillon<T> m) {
         m.setSuivant(this.getTete());
         this.tete = m;
     }
@@ -68,30 +68,6 @@ public class Liste {
         return this.tete == null;
     }
 
-    // Ozgur
-
-    /**
-     * Trie la liste courante
-     */
-    public void sort(){
-        if(!estVide()){
-            boolean trie = false;
-            Maillon tmp = tete;
-            Maillon echange = new Maillon(null,null);
-            while (!trie){
-                trie = true;
-                while(tmp.getSuivant() != null) {
-                    if (tmp.getInfo().compareTo(tmp.getSuivant().getInfo()) == 1) {
-                        echange.setInfo(tmp.getInfo());
-                        tmp.setInfo(tmp.getSuivant().getInfo());
-                        tmp.getSuivant().setInfo(echange.getInfo());
-                        trie = false;
-                    }
-                    tmp = tmp.getSuivant();
-                }
-            }
-        }
-    }
 
     //Uzay
 
@@ -101,7 +77,7 @@ public class Liste {
      * @return : la taille de la liste
      */
     public int taille() {
-        Maillon tmp = this.tete;
+        Maillon<T> tmp = this.tete;
         int taille = 0;
         while (tmp != null) {
             taille++;
@@ -117,11 +93,11 @@ public class Liste {
      *
      * @param m : maillon a supprimer
      */
-    public void supprimerMaillon(Maillon m){
+    public void supprimerMaillon(Maillon<T> m){
         if (tete.equals(m)) {
             tete = tete.getSuivant();
         } else {
-            Maillon tmp = tete;
+            Maillon <T>tmp = tete;
             while (!(tmp.getSuivant() == null)) {
                 if (tmp.getSuivant().equals(m)) {
                     tmp.setSuivant(tmp.getSuivant().getSuivant());
@@ -131,25 +107,82 @@ public class Liste {
         }
     }
 
+
+    //Juliette
+
     /**
-     * Retourne la liste sous forme de chaine de caracteres
+     * Verifie la configuration vaisseau du jeu
      *
-     * @return : Une chaine de caractere contenant la liste entiere
+     * @param l
+     * @return True si la configuration du jeu est vaisseau, False sinon
      */
-    @Override
-    public String toString() {
-        String s = "";
-        if(tete==null) return null;
-        else {
-            if (tete.getSuivant() == null) return tete.toString();
-            else {
-                Maillon tmp = tete;
-                while(tmp.getSuivant() != null){
-                    s += tmp.toString();
-                    tmp = tmp.getSuivant();
-                }
+    public boolean estVaisseau(Liste<Coordonnee> l){
+        if(this.taille()==l.taille()){
+            Maillon<Coordonnee> tmp1=(Maillon<Coordonnee>)this.getTete();
+            Maillon<Coordonnee> tmp2=l.getTete();
+            Coordonnee vecteur = tmp1.getInfo().distanceCoordonnee(tmp2.getInfo()); //vecteur modele entre les coordonnees du premier maillon de chaque liste
+
+            while (tmp1.getSuivant()!=null){
+                tmp1=tmp1.getSuivant(); //coordonnee tmp1
+                tmp2=tmp2.getSuivant();//coordonnee tmp2
+                if(!(tmp1.getInfo().distanceCoordonnee(tmp2.getInfo()).equals(vecteur)))return false;
+
+            }
+            return  true;
+
+        }else return false;
+
+    }
+    //Juliette
+    /**
+     * Verifie la configuration oscillateur du jeu
+     *
+     * @param l
+     * @return True si la configuration du jeu est oscillateur, False sinon
+     */
+    public boolean estOscillateur(Liste<Coordonnee> l){
+        if(this.taille()==l.taille()){
+            Maillon tmp1=this.getTete();
+            Maillon tmp2=l.getTete();
+
+            while (tmp1!=null){
+                if(tmp1.getInfo().equals(tmp2.getInfo())){
+                    tmp1 = tmp1.getSuivant(); //coordonnee tmp1
+                    tmp2 = tmp2.getSuivant();//coordonnee tmp2
+                }else return false;
+            }
+            return  true;
+
+        }else return false;
+
+    }
+
+    // Juliette
+    /**
+     * Teste la configuration du jeu
+     *
+     * @param l : Liste des configurations precedentes
+     * @return configuration : 1 si configuration morte ; 2 si configuration stable ; 3 si configuration oscillateur ; 4 sı configuration vaisseau ; 5 si configuration indéterminee
+     */
+    public int configuration(Liste<Liste<Coordonnee>> l){ //la liste de liste doit etre completee avec ajouteEntete()
+        if(this.estVide())return 1; //liste vide > pas de cellule vivante > configuration morte
+        if(this.equals(l.getTete())) return 2; //liste identique a la precedente > plus d'evolution > configuration stable
+        Maillon<Liste<Coordonnee>> tmp = l.getTete();
+
+        while (tmp!=null){ //Recherche d'une liste identique a this > l'evolution sera la meme > configuration oscillateur
+            if(this.estOscillateur(tmp.getInfo())){
+                return 3;
+            }else{
+                tmp=tmp.getSuivant();
             }
         }
-        return s;
+        while (tmp!=null){ //Recherche d'une liste identique a this > l'evolution sera la meme > configuration oscillateur
+            if(this.estVaisseau(tmp.getInfo())){
+                return 4;
+            }else{
+                tmp=tmp.getSuivant();
+            }
+        }
+        return 5;
     }
 }

@@ -1,6 +1,6 @@
 package LeJeuDeLaVie;
 
-public class GestionFichier {
+/*public class GestionFichier {
     public static void LireFichier(String fichier) {
         
     }
@@ -62,3 +62,4 @@ public class GestionFichier {
         return ensembleSallesCinema;
     }
 }
+*/
